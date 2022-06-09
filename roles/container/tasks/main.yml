@@ -1,0 +1,38 @@
+---
+- name: Creating Build Directory
+  file:
+    path: "/home/aparato/aparato_containerization2/docker"
+    state: directory
+
+- name: Copying Dockerfile
+  copy:
+    src: "/home/aparato/aparato_containerization2/dockerfile"
+    dest: "/home/aparato/aparato_containerization2/docker/dockerfile"
+
+- name: Building Container Image
+  docker_image:
+    name: hoa5-2
+    tag: v1
+    path: "/home/aparato/aparato_containerization2/docker"
+    state: build
+
+- name: Running the Container
+  docker_container:
+    image: hoa5-2:v1
+    name: hoa5-2
+    state: started
+    ports:
+      - "8080:80"
+
+- name: Running Apache-PHP
+  docker_container:
+    image: romeoz/docker-apache-php:latest
+    name: romeoz
+    state: started
+
+- name: Running MySQL
+  docker_container:
+    image: mysql/mysql-server:latest
+    name: mysql
+    state: started
+# tasks file for container
